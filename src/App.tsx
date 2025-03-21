@@ -1,18 +1,21 @@
+// App.tsx
 import React from 'react';
-import dayjs from 'dayjs';
 import './App.css';
+import NewTaskModal from './components/NewTaskModal';
+import { useSelector, useDispatch } from 'react-redux';
+import { openModal } from './features/tasks/tasksSlice';
+import { RootState } from './app/store';
 
 const App: React.FC = () => {
-	const hours = Array.from({ length: 16 }, (_, i) => {
-		return dayjs()
-			.startOf('day')
-			.add(i + 6, 'hour')
-			.format('h:mm A');
-	});
+	const dispatch = useDispatch();
+	const modalOpen = useSelector((state: RootState) => state.tasks.modalOpen);
+	const hours = useSelector((state: RootState) => state.tasks.hours);
 
 	return (
 		<div className="app">
-			<h1>Hourly</h1>
+			<div className="navbar">
+				<h1>Hourly</h1>
+			</div>
 			<div className="hour-column">
 				{hours.map((hour) => (
 					<div key={hour} className="hour-block">
@@ -20,6 +23,11 @@ const App: React.FC = () => {
 					</div>
 				))}
 			</div>
+
+			<button className="fab" onClick={() => dispatch(openModal())}>
+				<div>+</div>
+			</button>
+			{modalOpen && <NewTaskModal />}
 		</div>
 	);
 };
